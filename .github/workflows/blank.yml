@@ -40,3 +40,10 @@ jobs:
 
       - name: Set up Docker Compose
         run: sudo apt-get install docker-compose
+
+      - name: Build and start services
+        run: docker-compose up -d --build
+
+      # NOTE: this should always run?
+      - name: Shut down services
+        run: docker-compose down
