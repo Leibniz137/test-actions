@@ -41,9 +41,34 @@ jobs:
       - name: Set up Docker Compose
         run: sudo apt-get install docker-compose
 
-      - name: Build and start services
-        run: docker-compose up -d --build
+      - name: Docker Compose action
+        uses: hoverkraft-tech/compose-action@v0.0.0
+        with:
+          # Description: Relative path to compose file(s). It can be a list of files.
+          #
+          # Default: ./docker-compose.yml
+          # compose-file: ""
 
-      # NOTE: this should always run?
-      - name: Shut down services
-        run: docker-compose down
+          # Description: Services to perform docker-compose up.
+          #
+          # services: ""
+
+          # Description: Additional options to pass to `docker-compose up` command.
+          #
+          # Default:
+          up-flags: "--build"
+
+          # Description: Additional options to pass to `docker-compose down` command.
+          #
+          # Default:
+          # down-flags: ""
+
+          # Description: Additional options to pass to `docker-compose` command.
+          #
+          # Default:
+          # compose-flags: ""
+
+          # Description: Current working directory
+          #
+          # Default: ${{ github.workspace }}
+          # cwd: ""
