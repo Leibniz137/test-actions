@@ -3,5 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
     command: tail -f /dev/null
 
