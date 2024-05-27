@@ -5,5 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         DOCKER_BUILDKIT: 1
+      ssh:
+        - default
     command: tail -f /dev/null
 
