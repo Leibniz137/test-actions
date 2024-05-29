@@ -7,5 +7,18 @@ services:
         DOCKER_BUILDKIT: 1
       ssh:
         - default
-    command: tail -f /dev/null
+    entrypoint:
+    - /bin/sh
+    - -c
+    command:
+    - |
+      sleep 15
+      echo 'done' >/tmp/test.txt
+      tail -f /dev/null
+    healthcheck:
+      test: ["CMD", "ls", "/tmp/test.txt"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
