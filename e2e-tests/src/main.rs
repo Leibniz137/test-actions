@@ -57,6 +57,6 @@ async fn check_container_health(container_name: &str) {
             std::process::exit(1);
         }
 
-        sleep(Duration::from_secs(5)).await;
+        sleep(Duration::from_secs(15)).await;
     }
 }
