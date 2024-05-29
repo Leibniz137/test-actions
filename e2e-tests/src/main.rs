@@ -22,7 +22,7 @@ async fn check_container_health(container_name: &str) {
     let docker = Docker::connect_with_local_defaults().expect("Failed to connect to Docker");
 
     let mut attempts = 0;
-    let max_attempts = 24; // 2 minutes / 5 seconds per attempt
+    let max_attempts = 8; // 2 minutes / 15 seconds per attempt
 
     loop {
         match docker.inspect_container(container_name, None::<InspectContainerOptions>).await {
