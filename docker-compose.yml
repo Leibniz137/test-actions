@@ -13,6 +13,7 @@ services:
     command:
     - |
       sleep 15
+      exit 1
       echo 'done' >/tmp/test.txt
       tail -f /dev/null
     healthcheck:
