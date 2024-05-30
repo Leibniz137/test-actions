@@ -50,7 +50,7 @@ jobs:
           # Description: Additional options to pass to `docker-compose up` command.
           #
           # Default:
-          up-flags: "--build"
+          up-flags: "--build --wait"
 
           # Description: Additional options to pass to `docker-compose down` command.
           #
