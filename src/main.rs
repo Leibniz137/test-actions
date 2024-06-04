@@ -1,62 +1,49 @@
-use bollard::Docker;
-use bollard::container::InspectContainerOptions;
-use std::env;
-use std::time::Duration;
-use tokio::time::sleep;
-use bollard::models::ContainerStateStatusEnum;
-use bollard::models::HealthStatusEnum;
+use tokio::time::{sleep, Duration};
+use reqwest::Client;
+use serde::Deserialize;
+use std::error::Error;
 
-#[tokio::main]
-async fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        eprintln!("Usage: {} <container_name>", args[0]);
-        std::process::exit(1);
-    }
-    let container_name = &args[1];
-
-    check_container_health(container_name).await;
+#[derive(Deserialize)]
+struct BlockNumberResponse {
+    result: String,
 }
 
-async fn check_container_health(container_name: &str) {
-    let docker = Docker::connect_with_local_defaults().expect("Failed to connect to Docker");
+async fn fetch_block_number(client: &Client, rpc_url: &str) -> Result<u64, Box<dyn Error>> {
+    let response = client.post(rpc_url)
+        .json(&serde_json::json!({"jsonrpc": "2.0", "method": "eth_blockNumber", "params": [], "id": 1}))
+        .send()
+        .await?
+        .json::<BlockNumberResponse>()
+        .await?;
 
-    let mut attempts = 0;
-    let max_attempts = 8; // 2 minutes / 15 seconds per attempt
+    // Convert the hex string result to a u64 number
+    let block_number = u64::from_str_radix(&response.result.trim_start_matches("0x"), 16)?;
+    Ok(block_number)
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
+    // let rpc_url = "http://192.168.50.102:8545"; // Replace with your Ethereum RPC URL
+    let rpc_url = "http://localhost:8545";
+    let client = Client::new();
+
+    let mut previous_block_number = fetch_block_number(&client, rpc_url).await?;
 
     loop {
-        match docker.inspect_container(container_name, None::<InspectContainerOptions>).await {
-            Ok(container_info) => {
-                if let Some(state) = container_info.state {
-                    let status = state.status.unwrap_or(ContainerStateStatusEnum::EMPTY);
-                    println!("Container Status: {:?}", status);
+        sleep(Duration::from_secs(10)).await;
 
-                    if let Some(health) = state.health {
-                        let health_status = health.status.unwrap_or(HealthStatusEnum::EMPTY);
-                        println!("Health Status: {:?}", health_status);
-
-                        if health_status == HealthStatusEnum::HEALTHY {
-                            println!("Container is healthy.");
-                            return;
-                        }
-                    } else {
-                        println!("No health information available.");
-                    }
+        match fetch_block_number(&client, rpc_url).await {
+            Ok(current_block_number) => {
+                if current_block_number > previous_block_number {
+                    println!("New block detected: {}", current_block_number);
+                    previous_block_number = current_block_number;
                 } else {
-                    println!("No state information available.");
+                    println!("No new block yet. Current block: {}", current_block_number);
                 }
-            },
+            }
             Err(e) => {
-                eprintln!("Error inspecting container: {}", e);
-            },
+                eprintln!("Error fetching block number: {}", e);
+            }
         }
-
-        attempts += 1;
-        if attempts >= max_attempts {
-            eprintln!("Container did not become healthy within the timeout period.");
-            std::process::exit(1);
-        }
-
-        sleep(Duration::from_secs(15)).await;
     }
 }
