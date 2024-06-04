@@ -27,7 +27,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let rpc_url = "http://localhost:8545";
     let client = Client::new();
 
-    let mut previous_block_number = fetch_block_number(&client, rpc_url).await?;
+    let mut previous_block_number = match fetch_block_number(&client, rpc_url).await {
+        Ok(number) => number,
+        Err(e) => {
+            eprintln!("Error fetching block number: {}", e);
+            0
+        }
+    };
     let mut failed_attempts = 0;
     let mut successful_attempts = 0;
     let max_attempts = 10;
