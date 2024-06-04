@@ -36,7 +36,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
     let mut failed_attempts = 0;
     let mut successful_attempts = 0;
-    let max_attempts = 10;
+    let max_failed_attempts = 100;
+    let max_successful_attempts = 10;
 
     loop {
         sleep(Duration::from_secs(10)).await;
@@ -58,12 +59,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
         }
 
-        if failed_attempts >= max_attempts {
-            eprintln!("Failed to fetch new block or no new block produced after {} attempts.", max_attempts);
+        if failed_attempts >= max_failed_attempts {
+            eprintln!("Failed to fetch new block or no new block produced after {} attempts.", max_failed_attempts);
             std::process::exit(1);
         }
-        if successful_attempts >= max_attempts {
-            eprintln!("{} new blocks produced successfully!", successful_attempts);
+        if successful_attempts >= max_successful_attempts {
+            eprintln!("we're making blocks!");
             std::process::exit(0);
         }
     }
