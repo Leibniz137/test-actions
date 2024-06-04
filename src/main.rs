@@ -28,6 +28,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let client = Client::new();
 
     let mut previous_block_number = fetch_block_number(&client, rpc_url).await?;
+    let mut failed_attempts = 0;
+    let mut successful_attempts = 0;
+    let max_attempts = 10;
 
     loop {
         sleep(Duration::from_secs(10)).await;
@@ -37,13 +40,25 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 if current_block_number > previous_block_number {
                     println!("New block detected: {}", current_block_number);
                     previous_block_number = current_block_number;
+                    successful_attempts += 1; // Reset attempts on successful block detection
                 } else {
                     println!("No new block yet. Current block: {}", current_block_number);
+                    failed_attempts += 1;
                 }
             }
             Err(e) => {
                 eprintln!("Error fetching block number: {}", e);
+                failed_attempts += 1;
             }
+        }
+
+        if failed_attempts >= max_attempts {
+            eprintln!("Failed to fetch new block or no new block produced after {} attempts.", max_attempts);
+            std::process::exit(1);
+        }
+        if successful_attempts >= max_attempts {
+            eprintln!("{} new blocks produced successfully!", successful_attempts);
+            std::process::exit(0);
         }
     }
 }
