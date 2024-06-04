@@ -46,7 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 if current_block_number > previous_block_number {
                     println!("New block detected: {}", current_block_number);
                     previous_block_number = current_block_number;
-                    successful_attempts += 1; // Reset attempts on successful block detection
+                    successful_attempts += 1;
                 } else {
                     println!("No new block yet. Current block: {}", current_block_number);
                     failed_attempts += 1;
