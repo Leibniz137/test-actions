@@ -23,8 +23,7 @@ async fn fetch_block_number(client: &Client, rpc_url: &str) -> Result<u64, Box<d
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    // let rpc_url = "http://192.168.50.102:8545"; // Replace with your Ethereum RPC URL
-    let rpc_url = "http://localhost:8545";
+    let rpc_url = "http://localhost:8543";
     let client = Client::new();
 
     let mut previous_block_number = match fetch_block_number(&client, rpc_url).await {
