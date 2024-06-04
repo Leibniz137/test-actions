@@ -35,6 +35,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
     let mut failed_attempts = 0;
     let mut successful_attempts = 0;
+    // 100 attempts because this can actually take a while to start producing blocks
     let max_failed_attempts = 100;
     let max_successful_attempts = 10;
 
