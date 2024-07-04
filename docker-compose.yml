@@ -7,7 +7,7 @@ services:
         DOCKER_BUILDKIT: 1
       ssh:
         - default
-    image: busybox
+    image: test-actions
     entrypoint:
     - /bin/sh
     - -c
