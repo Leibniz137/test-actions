@@ -69,11 +69,11 @@ jobs:
           #
           # Default: ${{ github.workspace }}
           # cwd: ""
-      - name: Tag image with commit SHA
+      - name: Tag image with commit SHA and push
         run: |
           COMMIT_SHA=$(git rev-parse --short HEAD)
           docker tag test-actions natefirewall/test-actions:$COMMIT_SHA
-
+          docker push natefirewall/test-actions:$COMMIT_SHA
       # - uses: actions-rs/toolchain@v1
       #   with:
       #     profile: minimal
