@@ -69,6 +69,10 @@ jobs:
           #
           # Default: ${{ github.workspace }}
           # cwd: ""
+      - name: Tag image with commit SHA
+        run: |
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          docker tag devnet natefirewall/test-actions:$COMMIT_SHA
 
       # - uses: actions-rs/toolchain@v1
       #   with:
