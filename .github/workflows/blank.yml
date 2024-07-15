@@ -88,6 +88,12 @@ jobs:
         # if: github.event_name == 'push'
         run: |
           echo ${{ vars.TESTNET_URL }}
+
+          # SECURITY: trust host
+          echo  "Host *"  >> ~/.ssh/config
+          echo  "  StrictHostKeyChecking=no"  >> ~/.ssh/config
+          echo  "  UserKnownHostsFile=/dev/null"  >> ~/.ssh/config
+
           docker context create \
             --docker host=${{ vars.TESTNET_URL }} \
             --description="Test-infra remote engine" \
