@@ -38,42 +38,42 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker Compose action
-        uses: hoverkraft-tech/compose-action@v2.0.0
-        with:
-          # Description: Relative path to compose file(s). It can be a list of files.
-          #
-          # Default: ./docker-compose.yml
-          # compose-file: ""
+      # - name: Docker Compose action
+      #   uses: hoverkraft-tech/compose-action@v2.0.0
+      #   with:
+      #     # Description: Relative path to compose file(s). It can be a list of files.
+      #     #
+      #     # Default: ./docker-compose.yml
+      #     # compose-file: ""
 
-          # Description: Services to perform docker-compose up.
-          #
-          # services: ""
+      #     # Description: Services to perform docker-compose up.
+      #     #
+      #     # services: ""
 
-          # Description: Additional options to pass to `docker-compose up` command.
-          #
-          # Default:
-          up-flags: "--build --wait"
+      #     # Description: Additional options to pass to `docker-compose up` command.
+      #     #
+      #     # Default:
+      #     up-flags: "--build --wait"
 
-          # Description: Additional options to pass to `docker-compose down` command.
-          #
-          # Default:
-          # down-flags: ""
+      #     # Description: Additional options to pass to `docker-compose down` command.
+      #     #
+      #     # Default:
+      #     # down-flags: ""
 
-          # Description: Additional options to pass to `docker-compose` command.
-          #
-          # Default:
-          # compose-flags: ""
+      #     # Description: Additional options to pass to `docker-compose` command.
+      #     #
+      #     # Default:
+      #     # compose-flags: ""
 
-          # Description: Current working directory
-          #
-          # Default: ${{ github.workspace }}
-          # cwd: ""
-      - name: Tag image with commit SHA and push
-        run: |
-          COMMIT_SHA=$(git rev-parse --short HEAD)
-          docker tag test-actions natefirewall/test-actions:$COMMIT_SHA
-          docker push natefirewall/test-actions:$COMMIT_SHA
+      #     # Description: Current working directory
+      #     #
+      #     # Default: ${{ github.workspace }}
+      #     # cwd: ""
+      # - name: Tag image with commit SHA and push
+      #   run: |
+      #     COMMIT_SHA=$(git rev-parse --short HEAD)
+      #     docker tag test-actions natefirewall/test-actions:$COMMIT_SHA
+      #     docker push natefirewall/test-actions:$COMMIT_SHA
       # - uses: actions-rs/toolchain@v1
       #   with:
       #     profile: minimal
@@ -83,3 +83,12 @@ jobs:
       #   with:
       #     command: run
       #     args: -- test-actions-myservice-1
+      - name: Update testnet
+        # only publish image if push to main branch
+        # if: github.event_name == 'push'
+        run: |
+          echo $TESTNET_URL
+          # docker context create \
+          # --docker host=$TESTNET_URL \
+          # --description="Test-infra remote engine" \
+          # test-infra-remote-engine
