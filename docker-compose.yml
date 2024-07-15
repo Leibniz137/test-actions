@@ -1,25 +1,34 @@
 services:
-  myservice:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        DOCKER_BUILDKIT: 1
-      ssh:
-        - default
-    image: test-actions
-    entrypoint:
-    - /bin/sh
-    - -c
-    command:
-    - |
-      sleep 15
-      echo 'done' >/tmp/test.txt
-      tail -f /dev/null
-    healthcheck:
-      test: ["CMD", "ls", "/tmp/test.txt"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+  my-service:
+    # TODO: pull latest commit sha (or pull main tag?)
+    # firewalleng/devnet:${COMMIT_SHA}
+    # TODO: test dockerhub auth
+    # image: firewalleng/devnet:f041186
+    image: busybox
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+# services:
+#   myservice:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       args:
+#         DOCKER_BUILDKIT: 1
+#       ssh:
+#         - default
+#     image: test-actions
+#     entrypoint:
+#     - /bin/sh
+#     - -c
+#     command:
+#     - |
+#       sleep 15
+#       echo 'done' >/tmp/test.txt
+#       tail -f /dev/null
+#     healthcheck:
+#       test: ["CMD", "ls", "/tmp/test.txt"]
+#       interval: 1m30s
+#       timeout: 30s
+#       retries: 5
+#       start_period: 30s
 

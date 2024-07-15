@@ -89,6 +89,8 @@ jobs:
         run: |
           echo ${{ vars.TESTNET_URL }}
           docker context create \
-          --docker host=${{ vars.TESTNET_URL }} \
-          --description="Test-infra remote engine" \
-          test-infra-remote-engine
+            --docker host=${{ vars.TESTNET_URL }} \
+            --description="Test-infra remote engine" \
+            test-infra-remote-engine
+          docker context use test-infra-remote-engine
+          docker compose up -d
