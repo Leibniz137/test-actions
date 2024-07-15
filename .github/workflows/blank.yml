@@ -87,8 +87,8 @@ jobs:
         # only publish image if push to main branch
         # if: github.event_name == 'push'
         run: |
-          echo $TESTNET_URL
+          echo ${{ secrets.TESTNET_URL }}
           # docker context create \
-          # --docker host=$TESTNET_URL \
+          # --docker host=${{ secrets.TESTNET_URL }} \
           # --description="Test-infra remote engine" \
           # test-infra-remote-engine
